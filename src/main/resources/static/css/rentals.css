@@ -1,0 +1,128 @@
+/* ============================================================
+   RENTALS.CSS - Styles for Console & Equipment Rentals
+   ============================================================ */
+
+.tab-nav {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 12px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.tab-btn.active {
+    background: rgba(37, 166, 154, 0.15);
+    color: var(--primary);
+    border: 1px solid var(--glass-border-hover);
+}
+
+.rental-packs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+}
+
+.rental-card {
+    background: var(--card);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: var(--transition);
+    position: relative;
+}
+
+.rental-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 15px var(--primary-glow);
+}
+
+.rental-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.rental-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.rental-price-badge {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: #FFD700;
+}
+
+.rental-includes-list {
+    margin: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.include-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.include-item i {
+    color: var(--primary);
+    font-size: 12px;
+}
+
+.units-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--primary-light);
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--surface-elevated);
+    color: var(--text-primary);
+}
+
+@media (max-width: 576px) {
+    .rental-packs-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    .rental-card {
+        padding: 18px 14px;
+    }
+    .tab-nav {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .tab-btn {
+        white-space: nowrap;
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+}

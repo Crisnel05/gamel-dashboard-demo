@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance & Caisse - GAMEL Dashboard</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Finance Executive Custom Styles */
+        .finance-hero-banner {
+            background: linear-gradient(135deg, rgba(37, 166, 154, 0.15) 0%, rgba(15, 16, 21, 0.95) 100%);
+            border: 1px solid var(--glass-border-hover);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .finance-hero-totals {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        .hero-stat-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .hero-stat-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .hero-stat-amount {
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .payment-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: var(--radius-pill);
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--surface-elevated);
+            border: 1px solid var(--glass-border);
+        }
+        .payment-pill.wave {
+            color: #1dc4e9;
+            border-color: rgba(29, 196, 233, 0.3);
+            background: rgba(29, 196, 233, 0.1);
+        }
+        .payment-pill.om {
+            color: #ff7900;
+            border-color: rgba(255, 121, 0, 0.3);
+            background: rgba(255, 121, 0, 0.1);
+        }
+        .payment-pill.cash {
+            color: #10b981;
+            border-color: rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .receipt-container {
+            background: #ffffff;
+            color: #000000;
+            padding: 24px;
+            border-radius: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            max-width: 360px;
+            margin: 0 auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printableReceipt, #printableReceipt * {
+                visibility: visible;
+            }
+            #printableReceipt {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/logo.png">
+</head>
+<body data-page="finance">
+
+<div class="dashboard-layout">
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="mainSidebar">
+            <a href="index.html" class="sidebar-logo" title="GAMEL Dashboard - Accueil">
+                <img src="images/logo.png" alt="GAMEL" class="sidebar-logo-img">
+            </a>
+            <nav class="sidebar-menu">
+                <a href="index.html" class="menu-item" data-nav="index">
+                    <i class="fa-solid fa-chart-simple"></i> Dashboard
+                </a>
+                <a href="bookings.html" class="menu-item" data-nav="bookings">
+                    <i class="fa-solid fa-calendar-check"></i> Réservations
+                </a>
+                <a href="consoles.html" class="menu-item" data-nav="consoles">
+                    <i class="fa-solid fa-desktop"></i> Consoles
+                </a>
+                <a href="players.html" class="menu-item" data-nav="players">
+                    <i class="fa-solid fa-users"></i> Joueurs
+                </a>
+                <a href="events.html" class="menu-item" data-nav="events">
+                    <i class="fa-solid fa-trophy"></i> Tournois
+                </a>
+                <a href="games.html" class="menu-item" data-nav="games">
+                    <i class="fa-solid fa-dice-d20"></i> Catalogue Jeux
+                </a>
+                <a href="rentals.html" class="menu-item" data-nav="rentals">
+                    <i class="fa-solid fa-box-archive"></i> Locations
+                </a>
+                <a href="finance.html" class="menu-item active" data-nav="finance">
+                    <i class="fa-solid fa-coins"></i> Finance & Caisse
+                </a>
+            </nav>
+            <div class="sidebar-footer"><p>GAMEL Admin v1.0</p></div>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="globalSearch" placeholder="Rechercher une transaction...">
+            </div>
+            <div class="header-profile">
+                <div class="notification-bell">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge-dot"></span>
+                </div>
+                <div class="user-info">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=admin" alt="Admin" class="avatar">
+                    <div>
+                        <h4>Alex Carter</h4>
+                        <span>Admin Principal</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <!-- Executive Banner -->
+            <div class="finance-hero-banner">
+                <div class="finance-hero-totals">
+                    <div class="hero-stat-block">
+                        <span class="hero-stat-label">Chiffre d'Affaires Brut</span>
+                        <div class="hero-stat-amount" id="heroTotalRevenue">0 FCFA</div>
+                        <span style="font-size: 11px; color: var(--primary-light);"><i class="fa-solid fa-arrow-trend-up"></i> Total Encaissé</span>
+                    </div>
+
+                    <div style="width: 1px; height: 50px; background: var(--glass-border);"></div>
+
+                    <div class="hero-stat-block">
+                        <span class="hero-stat-label">💵 Espèces (Cash)</span>
+                        <div style="font-size: 20px; font-weight: 700; color: #10b981;" id="heroCashRevenue">0 FCFA</div>
+                        <span style="font-size: 11px; color: var(--text-muted);">Tiroir physique</span>
+                    </div>
+
+                    <div class="hero-stat-block">
+                        <span class="hero-stat-label">📱 Wave & OM</span>
+                        <div style="font-size: 20px; font-weight: 700; color: #1dc4e9;" id="heroMobileRevenue">0 FCFA</div>
+                        <span style="font-size: 11px; color: var(--text-muted);">Paiements mobiles</span>
+                    </div>
+
+                    <div class="hero-stat-block">
+                        <span class="hero-stat-label">💎 Bénéfice Net</span>
+                        <div style="font-size: 20px; font-weight: 700; color: var(--primary-light);" id="heroNetProfit">0 FCFA</div>
+                        <span style="font-size: 11px; color: var(--text-muted);">Après dépenses</span>
+                    </div>
+                </div>
+
+                <!-- Quick Action Buttons -->
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn btn-primary btn-sm" onclick="openAddTransactionModal('income')">
+                        <i class="fa-solid fa-plus-circle"></i> + Entrée
+                    </button>
+                    <button class="btn btn-outline btn-sm" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.4);" onclick="openAddTransactionModal('expense')">
+                        <i class="fa-solid fa-minus-circle"></i> - Dépense
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="openDailyCloseModal()">
+                        <i class="fa-solid fa-file-invoice-dollar"></i> Clôture Z
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="exportFinanceCSV()">
+                        <i class="fa-solid fa-file-csv"></i> CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Finance Navigation Tabs -->
+            <div class="tab-nav" style="margin-bottom: 20px;">
+                <button class="tab-btn active" id="tabBtnOverview" onclick="switchFinanceTab('overview')">
+                    <i class="fa-solid fa-chart-pie"></i> Vue d'Ensemble & KPIs
+                </button>
+                <button class="tab-btn" id="tabBtnCash" onclick="switchFinanceTab('cash')">
+                    <i class="fa-solid fa-money-bill-wave"></i> 💵 Tiroir-Caisse (Espèces)
+                </button>
+                <button class="tab-btn" id="tabBtnMobile" onclick="switchFinanceTab('mobile')">
+                    <i class="fa-solid fa-mobile-screen-button"></i> 📱 Wave & Orange Money
+                </button>
+                <button class="tab-btn" id="tabBtnLedger" onclick="switchFinanceTab('ledger')">
+                    <i class="fa-solid fa-list-check"></i> 📑 Journal Complet des Transactions
+                </button>
+            </div>
+
+            <!-- ── TAB 1: VUE D'ENSEMBLE ── -->
+            <div id="financeTabOverview" class="finance-tab-content">
+                <!-- Period Filter Ribbon -->
+                <div class="filter-bar" style="margin-bottom: 20px;">
+                    <span style="font-size: 13px; color: var(--text-secondary); margin-right: 4px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-calendar-days"></i> Période :
+                    </span>
+                    <button class="filter-btn" onclick="setFinancePeriod('today')">Aujourd'hui</button>
+                    <button class="filter-btn" onclick="setFinancePeriod('7days')">7 Derniers Jours</button>
+                    <button class="filter-btn" onclick="setFinancePeriod('30days')">Ce Mois-ci</button>
+                    <button class="filter-btn" onclick="setFinancePeriod('year')">Cette Année</button>
+                    <button class="filter-btn active" onclick="setFinancePeriod('all')">Tout l'Historique</button>
+                </div>
+
+                <!-- 4 Activity Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: #3b82f6;"><i class="fa-solid fa-gamepad"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-label">Postes & Sessions</span>
+                            <h3 class="stat-value" id="kpiBookingsRevenue">0 FCFA</h3>
+                            <span class="stat-hint">Sessions sur place</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: #a855f7;"><i class="fa-solid fa-box-open"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-label">Locations & Ventes</span>
+                            <h3 class="stat-value" id="kpiRentalsRevenue">0 FCFA</h3>
+                            <span class="stat-hint">Boutique & Matériel</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: #eab308;"><i class="fa-solid fa-trophy"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-label">Tournois & Events</span>
+                            <h3 class="stat-value" id="kpiEventsRevenue">0 FCFA</h3>
+                            <span class="stat-hint">Droits d'inscriptions</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: #ef4444;"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-label">Dépenses Enregistrées</span>
+                            <h3 class="stat-value" id="kpiTotalExpenses" style="color: #ef4444;">0 FCFA</h3>
+                            <span class="stat-hint">Sorties de caisse</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="finance-charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fa-solid fa-chart-line" style="color: var(--primary);"></i> Flux Financiers (Entrées vs Dépenses)</h3>
+                        </div>
+                        <div style="height: 260px; position: relative;">
+                            <canvas id="revenueTrendChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fa-solid fa-chart-pie" style="color: #a855f7;"></i> Répartition des Recettes</h3>
+                        </div>
+                        <div style="height: 260px; position: relative;">
+                            <canvas id="revenueCategoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── TAB 2: TIROIR-CAISSE & ESPÈCES ── -->
+            <div id="financeTabCash" class="finance-tab-content" style="display: none;">
+                <div class="stats-grid" style="margin-bottom: 20px;">
+                    <div class="stat-card" style="border-color: rgba(16, 185, 129, 0.4);">
+                        <div class="stat-icon" style="color: #10b981;"><i class="fa-solid fa-vault"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-label">Solde Espèces Théorique</span>
+                            <h3 class="stat-value" id="cashDrawerBalance" style="color: #10b981;">0 FCFA</h3>
+                            <span class="stat-hint">Total liquide encaissé - sorties cash</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: var(--primary);"><i class="fa-solid fa-arrow-down"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-label">Encaissements Espèces</span>
+                            <h3 class="stat-value" id="cashDrawerIncomes">0 FCFA</h3>
+                            <span class="stat-hint">Paiements cash reçus</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="color: #ef4444;"><i class="fa-solid fa-arrow-up"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-label">Sorties de Caisse Cash</span>
+                            <h3 class="stat-value" id="cashDrawerExpenses" style="color: #ef4444;">0 FCFA</h3>
+                            <span class="stat-hint">Dépenses payées en liquide</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card panel-body">
+                    <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-money-bill-1-wave" style="color: #10b981;"></i> Mouvements de Caisse en Espèces
+                    </h3>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Réf</th>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Motif</th>
+                                    <th>Auteur / Client</th>
+                                    <th style="text-align: right;">Montant</th>
+                                    <th style="text-align: center;">Ticket</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cashTransactionsTableBody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── TAB 3: WAVE & ORANGE MONEY ── -->
+            <div id="financeTabMobile" class="finance-tab-content" style="display: none;">
+                <div class="stats-grid" style="margin-bottom: 20px;">
+                    <div class="stat-card" style="border-color: rgba(29, 196, 233, 0.4);">
+                        <div class="stat-icon" style="color: #1dc4e9;"><i class="fa-solid fa-mobile-screen"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-label">Paiements Wave</span>
+                            <h3 class="stat-value" id="mobileWaveTotal" style="color: #1dc4e9;">0 FCFA</h3>
+                            <span class="stat-hint">Reçus via Wave</span>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="border-color: rgba(255, 121, 0, 0.4);">
+                        <div class="stat-icon" style="color: #ff7900;"><i class="fa-solid fa-sim-card"></i></div>
+                        <div class="stat-data">
+                            <span class="stat-label">Orange Money</span>
+                            <h3 class="stat-value" id="mobileOMTotal" style="color: #ff7900;">0 FCFA</h3>
+                            <span class="stat-hint">Reçus via Orange Money</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card panel-body">
+                    <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-qrcode" style="color: #1dc4e9;"></i> Transactions Mobile Money Confirmées
+                    </h3>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Réf</th>
+                                    <th>Date</th>
+                                    <th>Canal</th>
+                                    <th>Description</th>
+                                    <th>Client</th>
+                                    <th style="text-align: right;">Montant</th>
+                                    <th style="text-align: center;">Ticket</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mobileTransactionsTableBody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── TAB 4: JOURNAL COMPLET DES TRANSACTIONS ── -->
+            <div id="financeTabLedger" class="finance-tab-content" style="display: none;">
+                <div class="card panel-body">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 16px;">
+                        <div>
+                            <h3 style="font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-receipt" style="color: var(--primary);"></i> Grand Livre des Opérations
+                                <span id="txnCountBadge" class="badge-status available">0 opérations</span>
+                            </h3>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                            <div class="header-search" style="width: 220px;">
+                                <i class="fa-solid fa-search"></i>
+                                <input type="text" id="txnSearchInput" placeholder="Rechercher..." oninput="handleTxnSearch()">
+                            </div>
+                            <select id="txnTypeFilter" class="form-control" style="width: 150px;" onchange="handleTxnSearch()">
+                                <option value="all">Tous types</option>
+                                <option value="income">Entrées (+)</option>
+                                <option value="expense">Dépenses (-)</option>
+                                <option value="Sessions & Postes">Sessions</option>
+                                <option value="Locations & Ventes">Locations/Ventes</option>
+                                <option value="Tournois">Tournois</option>
+                            </select>
+                            <select id="txnPaymentFilter" class="form-control" style="width: 140px;" onchange="handleTxnSearch()">
+                                <option value="all">Tous paiements</option>
+                                <option value="Espèces">Espèces</option>
+                                <option value="Wave">Wave</option>
+                                <option value="Orange Money">Orange Money</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Transactions Table -->
+                    <div class="table-responsive">
+                        <table class="data-table" id="transactionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Réf</th>
+                                    <th>Date & Heure</th>
+                                    <th>Type</th>
+                                    <th>Catégorie</th>
+                                    <th>Description / Motif</th>
+                                    <th>Client / Auteur</th>
+                                    <th>Règlement</th>
+                                    <th style="text-align: right;">Montant</th>
+                                    <th style="text-align: center;">Ticket</th>
+                                    <th style="text-align: center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsTableBody">
+                                <tr>
+                                    <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 30px;">Chargement du journal financier...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- MODAL 1: Ajouter une Opération de Caisse / Dépense -->
+<div id="addTransactionModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="addTxnModalTitle">Nouvelle Opération de Caisse</h3>
+            <button class="modal-close" onclick="closeModal('addTransactionModal')">&times;</button>
+        </div>
+        <form id="addTransactionForm" onsubmit="handleSaveManualTransaction(event)">
+            
+            <!-- Type Switcher -->
+            <div class="toggle-type-group">
+                <button type="button" class="toggle-type-btn income-btn active" id="btnTypeIncome" onclick="setManualTxnType('income')">
+                    <i class="fa-solid fa-arrow-down"></i> Entrée (+ Recette)
+                </button>
+                <button type="button" class="toggle-type-btn expense-btn" id="btnTypeExpense" onclick="setManualTxnType('expense')">
+                    <i class="fa-solid fa-arrow-up"></i> Dépense (- Sortie)
+                </button>
+            </div>
+            <input type="hidden" id="manualTxnType" value="income">
+
+            <div class="form-group">
+                <label>Catégorie</label>
+                <select id="manualTxnCategory" class="form-control" required>
+                    <option value="Sessions & Postes">Sessions & Postes</option>
+                    <option value="Locations & Ventes">Locations & Ventes</option>
+                    <option value="Tournois">Tournois</option>
+                    <option value="Snacks & Boissons">Snacks & Boissons</option>
+                    <option value="Maintenance & Matériel">Maintenance & Matériel</option>
+                    <option value="Charges & Électricité">Charges & Électricité</option>
+                    <option value="Autre">Autre</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Motif / Titre de l'opération</label>
+                <input type="text" id="manualTxnTitle" class="form-control" placeholder="ex: Encaissement direct comptoir, Achat manette..." required>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label>Montant (FCFA)</label>
+                    <input type="number" id="manualTxnAmount" class="form-control" placeholder="ex: 5000" min="50" step="50" required>
+                </div>
+                <div class="form-group">
+                    <label>Moyen de Paiement</label>
+                    <select id="manualTxnPaymentMethod" class="form-control">
+                        <option value="Espèces">Espèces</option>
+                        <option value="Wave">Wave</option>
+                        <option value="Orange Money">Orange Money</option>
+                        <option value="Carte Bancaire">Carte Bancaire</option>
+                        <option value="Virement">Virement</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Notes / Remarques (Optionnel)</label>
+                <textarea id="manualTxnNotes" class="form-control" rows="2" placeholder="Détails supplémentaires..."></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('addTransactionModal')">Annuler</button>
+                <button type="submit" class="btn btn-primary" id="saveTxnBtn">Enregistrer l'opération</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL 2: Clôture de Caisse du Jour (Z de Caisse) -->
+<div id="dailyCloseModal" class="modal">
+    <div class="modal-content" style="max-width: 480px;">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-file-invoice-dollar" style="color: var(--primary);"></i> Clôture Z de Caisse du Jour</h3>
+            <button class="modal-close" onclick="closeModal('dailyCloseModal')">&times;</button>
+        </div>
+        <div id="dailyCloseContent" style="padding: 10px 0;">
+            <!-- Injected dynamically by finance.js -->
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="closeModal('dailyCloseModal')">Fermer</button>
+            <button type="button" class="btn btn-primary" onclick="printDailyCloseReport()">
+                <i class="fa-solid fa-print"></i> Imprimer Rapport
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 3: Ticket / Reçu de Transaction -->
+<div id="receiptModal" class="modal">
+    <div class="modal-content" style="max-width: 440px; background: transparent; border: none; box-shadow: none; padding: 0;">
+        <div id="printableReceipt">
+            <!-- Injected dynamically by finance.js -->
+        </div>
+        <div style="display: flex; justify-content: center; gap: 12px; margin-top: 16px;">
+            <button type="button" class="btn btn-outline" onclick="closeModal('receiptModal')">Fermer</button>
+            <button type="button" class="btn btn-primary" onclick="window.print()">
+                <i class="fa-solid fa-print"></i> Imprimer Ticket
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="js/layout.js"></script>
+<script src="js/app.js?v=20260828_5"></script>
+<script src="js/finance.js?v=20260828_5"></script>
+</body>
+</html>

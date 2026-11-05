@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAMEL – Catalogue de Jeux</title>
+    <meta name="description" content="Gestion de la ludothèque, des tarifs et de la disponibilité des jeux GAMEL.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/games.css">
+</head>
+<body data-page="games">
+
+<div class="app-container">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="mainSidebar">
+            <a href="index.html" class="sidebar-logo" title="GAMEL Dashboard - Accueil">
+                <img src="images/logo.png" alt="GAMEL" class="sidebar-logo-img">
+            </a>
+            <nav class="sidebar-menu">
+                <a href="index.html" class="menu-item" data-nav="index">
+                    <i class="fa-solid fa-chart-simple"></i> Dashboard
+                </a>
+                <a href="bookings.html" class="menu-item" data-nav="bookings">
+                    <i class="fa-solid fa-calendar-check"></i> Réservations
+                </a>
+                <a href="consoles.html" class="menu-item" data-nav="consoles">
+                    <i class="fa-solid fa-desktop"></i> Consoles
+                </a>
+                <a href="players.html" class="menu-item" data-nav="players">
+                    <i class="fa-solid fa-users"></i> Joueurs
+                </a>
+                <a href="events.html" class="menu-item" data-nav="events">
+                    <i class="fa-solid fa-trophy"></i> Tournois
+                </a>
+                <a href="games.html" class="menu-item active" data-nav="games">
+                    <i class="fa-solid fa-dice-d20"></i> Catalogue Jeux
+                </a>
+                <a href="rentals.html" class="menu-item" data-nav="rentals">
+                    <i class="fa-solid fa-box-archive"></i> Locations
+                </a>
+                <a href="finance.html" class="menu-item" data-nav="finance">
+                    <i class="fa-solid fa-coins"></i> Finance & Caisse
+                </a>
+            </nav>
+            <div class="sidebar-footer"><p>GAMEL Admin v1.0</p></div>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="main-content">
+
+        <header class="top-header">
+            <div class="header-search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="globalSearch" placeholder="Rechercher...">
+            </div>
+            <div class="header-profile">
+                <div class="notification-bell">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge-dot"></span>
+                </div>
+                <div class="user-info">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=admin" alt="Admin" class="avatar">
+                    <div>
+                        <h4>Alex Carter</h4>
+                        <span>Admin Principal</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="page-content">
+
+            <div class="view-header">
+                <div>
+                    <h1>Catalogue de Jeux</h1>
+                    <p style="color: var(--text-secondary); margin-top: 4px; font-size: 14px;">Gérez la ludothèque du salon, les tarifs horaires, options de location et disponibilités.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openAddGameModal()">
+                    <i class="fa-solid fa-plus"></i> Ajouter un Jeu
+                </button>
+            </div>
+
+            <!-- Stats Ribbon -->
+            <div class="stats-grid" style="margin-bottom: 24px;">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-gamepad"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">TITRES EN LUDOTHÈQUE</span>
+                        <h2 class="stat-value font-orbitron" id="stat-total-games">0</h2>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(37,166,154,0.2);"><i class="fa-solid fa-truck-ramp-box"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">DISPO LOCATION DOMICILE</span>
+                        <h2 class="stat-value font-orbitron" id="stat-rental-games">0</h2>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(255,193,7,0.15); color: #FFC107;"><i class="fa-solid fa-star"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">GENRES REPRÉSENTÉS</span>
+                        <h2 class="stat-value font-orbitron" id="stat-genres-count">0</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters Bar -->
+            <div class="table-card" style="padding: 16px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                <div id="platformFilterGroup" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn btn-sm btn-outline filter-btn active" data-platform="all" onclick="filterGames('all')">Tous</button>
+                </div>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <input type="text" id="gameSearch" class="form-control" style="width: 220px; padding: 8px 12px; font-size: 13px;" placeholder="Rechercher un titre...">
+                </div>
+            </div>
+
+            <!-- Games Grid -->
+            <div class="games-grid" id="gamesGrid">
+                <!-- Injected dynamically by games.js -->
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<!-- Modal: Add / Edit Game -->
+<div class="modal" id="gameModal">
+    <div class="modal-content" style="max-width: 580px;">
+        <div class="modal-header">
+            <h3 id="gameModalTitle">Ajouter un Jeu</h3>
+            <button class="modal-close" onclick="closeModal('gameModal')">&times;</button>
+        </div>
+        <form id="gameForm" onsubmit="handleSaveGame(event)">
+            <input type="hidden" id="gameId">
+
+            <div class="form-group">
+                <label>Nom du Jeu</label>
+                <input type="text" id="gameName" class="form-control" placeholder="ex: EA Sports FC 26" required>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label>Genre</label>
+                    <input type="text" id="gameGenre" class="form-control" placeholder="ex: Sport, FPS, Combat, RPG..." required>
+                </div>
+                <div class="form-group">
+                    <label>Console / Plateforme</label>
+                    <select id="gameConsole" class="form-control" required>
+                        <!-- Loaded dynamically from admin consoles -->
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-grid-3">
+                <div class="form-group">
+                    <label>Tarif / Heure (FCFA)</label>
+                    <input type="number" id="gamePriceHour" class="form-control" placeholder="1000" required>
+                </div>
+                <div class="form-group">
+                    <label>Tarif Location / Jour</label>
+                    <input type="number" id="gamePriceRental" class="form-control" placeholder="2500" required>
+                </div>
+                <div class="form-group">
+                    <label>Rang Popularité</label>
+                    <input type="number" id="gameRank" class="form-control" placeholder="1">
+                </div>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label>Statut</label>
+                    <select id="gameStatus" class="form-control">
+                        <option value="available">Disponible</option>
+                        <option value="inUse">En cours d'utilisation</option>
+                        <option value="maintenance">En maintenance</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Couleur d'accent (Hex)</label>
+                    <input type="color" id="gameColor" class="form-control" value="#25a69a" style="height: 44px; padding: 4px;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Description & Synopsis</label>
+                <textarea id="gameDesc" class="form-control" rows="3" placeholder="Description du jeu..."></textarea>
+            </div>
+
+            <div class="form-group" style="flex-direction: row; align-items: center; gap: 10px;">
+                <input type="checkbox" id="gameRentalCheck" checked style="width: 18px; height: 18px; accent-color: var(--primary);">
+                <label for="gameRentalCheck" style="margin: 0; cursor: pointer;">Disponible à la location à emporter</label>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('gameModal')">Annuler</button>
+                <button type="submit" class="btn btn-primary">Enregistrer le Jeu</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="js/layout.js"></script>
+<script src="js/app.js?v=20260828_5"></script>
+<script src="js/games.js?v=20260828_5"></script>
+</body>
+</html>

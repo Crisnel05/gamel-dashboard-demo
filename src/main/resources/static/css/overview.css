@@ -1,0 +1,141 @@
+/* ============================================================
+   OVERVIEW.CSS - Dashboard Overview page styles
+   Stats cards, charts grid, console usage, recent bookings
+   ============================================================ */
+
+/* Stats Cards Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.stat-card {
+    background-color: var(--card);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(37, 166, 154, 0.05) 0%, rgba(0, 0, 0, 0) 100%);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--glass-border-hover);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 15px var(--primary-glow);
+}
+
+.stat-card:hover::before { opacity: 1; }
+
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: var(--primary);
+    background-color: var(--glass-background);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 0 10px rgba(37, 166, 154, 0.1);
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.stat-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+/* Charts Grid Layout */
+.dashboard-charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+/* Chart Container */
+.chart-container {
+    height: 300px;
+    width: 100%;
+}
+
+/* Console Usage Progress rows */
+.console-progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.progress-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.progress-label {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.progress-pct {
+    color: var(--primary);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+}
+
+.progress-track {
+    height: 8px;
+    background-color: var(--surface-elevated);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--primary);
+    border-radius: 4px;
+    box-shadow: 0 0 10px var(--primary);
+}
+
+/* Bottom Grid for Lists */
+.dashboard-details-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}

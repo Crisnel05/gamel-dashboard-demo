@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAMEL – Locations & Ventes</title>
+    <meta name="description" content="Gestion des locations et ventes de consoles et jeux vidéos.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/rentals.css">
+</head>
+<body data-page="rentals">
+
+<div class="app-container">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="mainSidebar">
+            <a href="index.html" class="sidebar-logo" title="GAMEL Dashboard - Accueil">
+                <img src="images/logo.png" alt="GAMEL" class="sidebar-logo-img">
+            </a>
+            <nav class="sidebar-menu">
+                <a href="index.html" class="menu-item" data-nav="index">
+                    <i class="fa-solid fa-chart-simple"></i> Dashboard
+                </a>
+                <a href="bookings.html" class="menu-item" data-nav="bookings">
+                    <i class="fa-solid fa-calendar-check"></i> Réservations
+                </a>
+                <a href="consoles.html" class="menu-item" data-nav="consoles">
+                    <i class="fa-solid fa-desktop"></i> Consoles
+                </a>
+                <a href="players.html" class="menu-item" data-nav="players">
+                    <i class="fa-solid fa-users"></i> Joueurs
+                </a>
+                <a href="events.html" class="menu-item" data-nav="events">
+                    <i class="fa-solid fa-trophy"></i> Tournois
+                </a>
+                <a href="games.html" class="menu-item" data-nav="games">
+                    <i class="fa-solid fa-dice-d20"></i> Catalogue Jeux
+                </a>
+                <a href="rentals.html" class="menu-item active" data-nav="rentals">
+                    <i class="fa-solid fa-box-archive"></i> Locations
+                </a>
+                <a href="finance.html" class="menu-item" data-nav="finance">
+                    <i class="fa-solid fa-coins"></i> Finance & Caisse
+                </a>
+            </nav>
+            <div class="sidebar-footer"><p>GAMEL Admin v1.0</p></div>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="main-content">
+
+        <header class="top-header">
+            <div class="header-search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="globalSearch" placeholder="Rechercher console, jeu en vente ou location...">
+            </div>
+            <div class="header-profile">
+                <div class="notification-bell">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge-dot"></span>
+                </div>
+                <div class="user-info">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=admin" alt="Admin" class="avatar">
+                    <div>
+                        <h4>Alex Carter</h4>
+                        <span>Admin Principal</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="page-content">
+
+            <div class="view-header">
+                <div>
+                    <h1>Locations & Ventes de Consoles & Jeux</h1>
+                    <p style="color: var(--text-secondary); margin-top: 4px; font-size: 14px;">Mettez en location ou en vente vos consoles et jeux enregistrés, et suivez les commandes.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openPutInRentalModal()">
+                    <i class="fa-solid fa-plus"></i> <span id="btnMainOfferText">Ajouter une Offre (Location / Vente)</span>
+                </button>
+            </div>
+
+            <!-- Stats Ribbon -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-gamepad"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">CONSOLES EN LOCATION</span>
+                        <h2 class="stat-value font-orbitron" id="stat-rental-consoles">0</h2>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(37,166,154,0.2);"><i class="fa-solid fa-store"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">CONSOLES EN VENTE</span>
+                        <h2 class="stat-value font-orbitron" id="stat-sale-consoles">0</h2>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(255,215,0,0.15); color: #FFD700;"><i class="fa-solid fa-dice-d20"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">JEUX EN VENTE & LOCATION</span>
+                        <h2 class="stat-value font-orbitron" id="stat-rental-games">0</h2>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(76,175,80,0.15); color: #4CAF50;"><i class="fa-solid fa-truck-fast"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">COMMANDES ACTIVES</span>
+                        <h2 class="stat-value font-orbitron" id="stat-active-rentals">0</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs Nav -->
+            <div class="tab-nav">
+                <button class="tab-btn active" id="tabBtnConsoles" onclick="switchRentalTab('consoles')">
+                    <i class="fa-solid fa-truck-ramp-box"></i> Consoles en Location (<span id="countTabRentalConsoles">0</span>)
+                </button>
+                <button class="tab-btn" id="tabBtnSaleConsoles" onclick="switchRentalTab('sale_consoles')">
+                    <i class="fa-solid fa-store"></i> Consoles en Vente (<span id="countTabSaleConsoles">0</span>)
+                </button>
+                <button class="tab-btn" id="tabBtnGames" onclick="switchRentalTab('games')">
+                    <i class="fa-solid fa-dice-d20"></i> Jeux Vidéos (Vente & Location) (<span id="countTabRentalGames">0</span>)
+                </button>
+                <button class="tab-btn" id="tabBtnOrders" onclick="switchRentalTab('orders')">
+                    <i class="fa-solid fa-receipt"></i> Commandes & Retours (<span id="countTabOrders">0</span>)
+                </button>
+            </div>
+
+            <!-- TAB 1: Consoles en Location -->
+            <div id="tabConsolesSection">
+                <div class="rental-packs-grid" id="rentalConsolesGrid">
+                    <!-- Injected dynamically by rentals.js -->
+                </div>
+            </div>
+
+            <!-- TAB 2: Consoles en Vente -->
+            <div id="tabSaleConsolesSection" style="display: none;">
+                <div class="rental-packs-grid" id="saleConsolesGrid">
+                    <!-- Injected dynamically by rentals.js -->
+                </div>
+            </div>
+
+            <!-- TAB 3: Jeux Vidéos en Vente & Location -->
+            <div id="tabGamesSection" style="display: none;">
+                <div class="rental-packs-grid" id="rentalGamesGrid">
+                    <!-- Injected dynamically by rentals.js -->
+                </div>
+            </div>
+
+            <!-- TAB 4: Commandes & Retours (Transactions) -->
+            <div id="tabOrdersSection" style="display: none;">
+                <div class="table-card table-responsive">
+                    <div class="table-header" style="padding: 16px 20px;">
+                        <h3>Suivi des Commandes & Livraisons</h3>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID & Client</th>
+                                <th>Article</th>
+                                <th>Type Offre</th>
+                                <th>Montant</th>
+                                <th>Paiement</th>
+                                <th>Livraison</th>
+                                <th>Statut</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rentalTransactionsBody">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<!-- MODAL: Proposer une Offre (Location ou Vente) -->
+<div class="modal" id="putInRentalModal">
+    <div class="modal-content" style="max-width: 580px;">
+        <div class="modal-header">
+            <h3 id="rentalModalTitle">Ajouter une Offre (Location / Vente)</h3>
+            <button class="modal-close" onclick="closeModal('putInRentalModal')">&times;</button>
+        </div>
+        <form id="putInRentalForm" onsubmit="handleSaveRental(event)">
+            <input type="hidden" id="rentalItemId">
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label>Type d'article</label>
+                    <select id="rentalItemCategory" class="form-control" onchange="handleOfferCategoryChange()" required>
+                        <option value="console">🎮 Console enregistrée</option>
+                        <option value="game">🎯 Jeu Vidéo enregistré</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Formule Commerciale</label>
+                    <select id="rentalOfferMode" class="form-control" onchange="handleOfferCategoryChange()" required>
+                        <option value="rental">🔄 Location Journalière (F/j)</option>
+                        <option value="sale">🛍️ Vente Définitive (Achat)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- If Console selected -->
+            <div id="groupConsoleSelect" class="form-group">
+                <label>Choisir parmi vos consoles enregistrées</label>
+                <select id="rentalConsoleSelect" class="form-control" onchange="handleRentalConsoleSelectChange()">
+                    <!-- Loaded dynamically from admin's console models -->
+                </select>
+            </div>
+
+            <!-- If Game selected -->
+            <div id="groupGameSelect" class="form-group" style="display: none;">
+                <label>Choisir parmi vos jeux vidéo enregistrés</label>
+                <select id="rentalGameSelect" class="form-control" onchange="handleRentalGameSelectChange()">
+                    <!-- Loaded dynamically from admin's games -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Titre de l'Offre</label>
+                <input type="text" id="rentalOfferName" class="form-control" placeholder="ex: Pack PlayStation 5 à domicile" required>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label id="labelOfferPrice">Tarif Journalier (FCFA / jour)</label>
+                    <input type="number" id="rentalDailyPrice" class="form-control" placeholder="10000" required>
+                </div>
+                <div class="form-group">
+                    <label>Unités en stock</label>
+                    <input type="number" id="rentalUnits" class="form-control" value="1" min="1" required>
+                </div>
+            </div>
+
+            <div class="form-group" id="groupCondition" style="display: none;">
+                <label>État du matériel / jeu (si Vente)</label>
+                <select id="rentalCondition" class="form-control">
+                    <option value="Neuf sous blister">Neuf sous blister</option>
+                    <option value="Reconditionné / Très bon état">Reconditionné / Très bon état</option>
+                    <option value="Occasion">Occasion</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="groupIncludes">
+                <label>Éléments & Accessoires inclus (séparés par virgules)</label>
+                <input type="text" id="rentalIncludes" class="form-control" placeholder="ex: 2 Manettes sans fil, Câble HDMI, Câbles, Boîtier">
+            </div>
+
+            <div class="form-group">
+                <label>Description & Détails de l'offre (optionnel)</label>
+                <textarea id="rentalDescription" class="form-control" rows="2" placeholder="Garantie, conditions de livraison à Dakar..."></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('putInRentalModal')">Annuler</button>
+                <button type="submit" class="btn btn-primary" id="saveRentalBtn">Publier l'Offre</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="js/layout.js"></script>
+<script src="js/app.js?v=20260828_5"></script>
+<script src="js/rentals.js"></script>
+</body>
+</html>

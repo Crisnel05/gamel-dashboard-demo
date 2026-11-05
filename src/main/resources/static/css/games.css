@@ -1,0 +1,133 @@
+/* ============================================================
+   GAMES.CSS - Styles for Games Catalog Management
+   ============================================================ */
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 22px;
+    margin-top: 24px;
+}
+
+.game-card {
+    background: var(--card);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.game-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 15px var(--primary-glow);
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.game-rank-badge {
+    background: rgba(255, 215, 0, 0.15);
+    color: #FFD700;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.game-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.game-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.game-tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--surface-elevated);
+    color: var(--text-secondary);
+    border: 1px solid var(--glass-border);
+}
+
+.game-prices {
+    display: flex;
+    justify-content: space-between;
+    background: var(--surface-elevated);
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin: 12px 0;
+}
+
+.price-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.price-box-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.price-box-val {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary-light);
+    font-family: 'Orbitron', sans-serif;
+}
+
+.game-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: 14px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.game-actions {
+    display: flex;
+    gap: 8px;
+    padding-top: 14px;
+    border-top: 1px solid var(--glass-border);
+}
+
+@media (max-width: 576px) {
+    .games-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    .game-card {
+        padding: 16px 14px;
+    }
+    .game-prices {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+

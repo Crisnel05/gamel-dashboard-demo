@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAMEL – Tournois & Événements</title>
+    <meta name="description" content="Gestion des tournois gaming, eSport et événements du lounge GAMEL.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/events.css">
+</head>
+<body data-page="events">
+
+<div class="app-container">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="mainSidebar">
+            <a href="index.html" class="sidebar-logo" title="GAMEL Dashboard - Accueil">
+                <img src="images/logo.png" alt="GAMEL" class="sidebar-logo-img">
+            </a>
+            <nav class="sidebar-menu">
+                <a href="index.html" class="menu-item" data-nav="index">
+                    <i class="fa-solid fa-chart-simple"></i> Dashboard
+                </a>
+                <a href="bookings.html" class="menu-item" data-nav="bookings">
+                    <i class="fa-solid fa-calendar-check"></i> Réservations
+                </a>
+                <a href="consoles.html" class="menu-item" data-nav="consoles">
+                    <i class="fa-solid fa-desktop"></i> Consoles
+                </a>
+                <a href="players.html" class="menu-item" data-nav="players">
+                    <i class="fa-solid fa-users"></i> Joueurs
+                </a>
+                <a href="events.html" class="menu-item active" data-nav="events">
+                    <i class="fa-solid fa-trophy"></i> Tournois
+                </a>
+                <a href="games.html" class="menu-item" data-nav="games">
+                    <i class="fa-solid fa-dice-d20"></i> Catalogue Jeux
+                </a>
+                <a href="rentals.html" class="menu-item" data-nav="rentals">
+                    <i class="fa-solid fa-box-archive"></i> Locations
+                </a>
+                <a href="finance.html" class="menu-item" data-nav="finance">
+                    <i class="fa-solid fa-coins"></i> Finance & Caisse
+                </a>
+            </nav>
+            <div class="sidebar-footer"><p>GAMEL Admin v1.0</p></div>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="main-content">
+
+        <header class="top-header">
+            <div class="header-search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="globalSearch" placeholder="Rechercher...">
+            </div>
+            <div class="header-profile">
+                <div class="notification-bell">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge-dot"></span>
+                </div>
+                <div class="user-info">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=admin" alt="Admin" class="avatar">
+                    <div>
+                        <h4>Alex Carter</h4>
+                        <span>Admin Principal</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="page-content">
+
+            <div class="view-header">
+                <div>
+                    <h1>Tournois & Événements</h1>
+                    <p style="color: var(--text-secondary); margin-top: 4px; font-size: 14px;">Pilotez les compétitions eSport, inscriptions et cashprizes de la communauté.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openCreateEventModal()">
+                    <i class="fa-solid fa-plus"></i> Créer un Tournoi
+                </button>
+            </div>
+
+            <!-- Stats Ribbon -->
+            <div class="stats-grid" style="margin-bottom: 24px;">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-trophy"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">TOTAL TOURNOIS</span>
+                        <h2 class="stat-value font-orbitron" id="stat-total-events">—</h2>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(37,166,154,0.2);"><i class="fa-solid fa-fire"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">ACTIFS / À VENIR</span>
+                        <h2 class="stat-value font-orbitron" id="stat-active-events">—</h2>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(255,215,0,0.15); color: #FFD700;"><i class="fa-solid fa-coins"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">CASHPRIZES ESTIMÉS</span>
+                        <h2 class="stat-value font-orbitron" id="stat-prizes">0 FCFA</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters Bar -->
+            <div class="table-card" style="padding: 16px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-sm btn-outline filter-btn active" data-status="all" onclick="filterEvents('all')">Tous</button>
+                    <button class="btn btn-sm btn-outline filter-btn" data-status="upcoming" onclick="filterEvents('upcoming')">À venir</button>
+                    <button class="btn btn-sm btn-outline filter-btn" data-status="ongoing" onclick="filterEvents('ongoing')">En cours</button>
+                    <button class="btn btn-sm btn-outline filter-btn" data-status="completed" onclick="filterEvents('completed')">Terminés</button>
+                </div>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <input type="text" id="eventSearch" class="form-control" style="width: 220px; padding: 8px 12px; font-size: 13px;" placeholder="Filtrer par titre ou jeu...">
+                </div>
+            </div>
+
+            <!-- Events Grid -->
+            <div class="events-grid" id="eventsGrid">
+                <!-- Injected by events.js -->
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<!-- Modal: Create / Edit Event -->
+<div class="modal" id="eventModal">
+    <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">
+            <h3 id="eventModalTitle">Nouveau Tournoi</h3>
+            <button class="modal-close" onclick="closeModal('eventModal')">&times;</button>
+        </div>
+        <form id="eventForm" onsubmit="handleSaveEvent(event)">
+            <input type="hidden" id="eventId">
+            
+            <div style="display: grid; grid-template-columns: 80px 1fr; gap: 12px;">
+                <div class="form-group">
+                    <label>Emoji</label>
+                    <input type="text" id="eventEmoji" class="form-control" placeholder="🏆" value="🏆" required>
+                </div>
+                <div class="form-group">
+                    <label>Nom du Tournoi</label>
+                    <input type="text" id="eventName" class="form-control" placeholder="ex: Dakar Cup FIFA 26" required>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                    <label>Jeu Officiel</label>
+                    <select id="eventGame" class="form-control" required>
+                        <!-- Loaded dynamically from admin's games -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Plateforme</label>
+                    <select id="eventPlatform" class="form-control" required>
+                        <!-- Loaded dynamically from admin's consoles -->
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="eventDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Heure Début</label>
+                    <input type="time" id="eventStartTime" class="form-control" value="15:00" required>
+                </div>
+                <div class="form-group">
+                    <label>Heure Fin</label>
+                    <input type="time" id="eventEndTime" class="form-control" value="21:00" required>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                    <label>Frais Inscription (FCFA)</label>
+                    <input type="number" id="eventFee" class="form-control" placeholder="2000" required>
+                </div>
+                <div class="form-group">
+                    <label>Places Max</label>
+                    <input type="number" id="eventMaxParticipants" class="form-control" placeholder="32" required>
+                </div>
+                <div class="form-group">
+                    <label>Statut</label>
+                    <select id="eventStatus" class="form-control">
+                        <option value="upcoming">À venir</option>
+                        <option value="ongoing">En cours</option>
+                        <option value="completed">Terminé</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Récompense / Cashprize</label>
+                <input type="text" id="eventPrize" class="form-control" placeholder="ex: 150 000 FCFA + Trophée" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description & Ambiance</label>
+                <textarea id="eventDescription" class="form-control" rows="2" placeholder="Description de l'événement..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Règlement & Format</label>
+                <textarea id="eventRules" class="form-control" rows="2" placeholder="1. Matchs de 6 min. 2. Élimination directe."></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('eventModal')">Annuler</button>
+                <button type="submit" class="btn btn-primary">Enregistrer le Tournoi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: View & Manage Participants -->
+<div class="modal modal-wide" id="participantsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div>
+                <h3 id="participantsModalTitle">Joueurs Inscrits</h3>
+                <span id="participantsModalSub" style="font-size: 13px; color: var(--text-secondary);"></span>
+            </div>
+            <button class="modal-close" onclick="closeModal('participantsModal')">&times;</button>
+        </div>
+        
+        <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+            <select id="selectPlayerToAdd" class="form-control" style="flex: 1;">
+                <option value="">Sélectionner un joueur à inscrire...</option>
+            </select>
+            <button class="btn btn-primary" onclick="handleAddParticipant()"><i class="fa-solid fa-user-plus"></i> Inscrire</button>
+        </div>
+
+        <div id="participantsList" style="max-height: 380px; overflow-y: auto;">
+            <!-- Injected dynamically -->
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="closeModal('participantsModal')">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/layout.js"></script>
+<script src="js/app.js?v=20260828_5"></script>
+<script src="js/events.js"></script>
+</body>
+</html>

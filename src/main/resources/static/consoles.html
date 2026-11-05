@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAMEL – Consoles, Jeux & Postes</title>
+    <meta name="description" content="Gestion des consoles, jeux vidéos et postes de jeu de la salle GAMEL.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/consoles.css">
+</head>
+<body data-page="consoles">
+
+<div class="app-container">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="mainSidebar">
+            <a href="index.html" class="sidebar-logo" title="GAMEL Dashboard - Accueil">
+                <img src="images/logo.png" alt="GAMEL" class="sidebar-logo-img">
+            </a>
+            <nav class="sidebar-menu">
+                <a href="index.html" class="menu-item" data-nav="index">
+                    <i class="fa-solid fa-chart-simple"></i> Dashboard
+                </a>
+                <a href="bookings.html" class="menu-item" data-nav="bookings">
+                    <i class="fa-solid fa-calendar-check"></i> Réservations
+                </a>
+                <a href="consoles.html" class="menu-item active" data-nav="consoles">
+                    <i class="fa-solid fa-desktop"></i> Consoles
+                </a>
+                <a href="players.html" class="menu-item" data-nav="players">
+                    <i class="fa-solid fa-users"></i> Joueurs
+                </a>
+                <a href="events.html" class="menu-item" data-nav="events">
+                    <i class="fa-solid fa-trophy"></i> Tournois
+                </a>
+                <a href="games.html" class="menu-item" data-nav="games">
+                    <i class="fa-solid fa-dice-d20"></i> Catalogue Jeux
+                </a>
+                <a href="rentals.html" class="menu-item" data-nav="rentals">
+                    <i class="fa-solid fa-box-archive"></i> Locations
+                </a>
+                <a href="finance.html" class="menu-item" data-nav="finance">
+                    <i class="fa-solid fa-coins"></i> Finance & Caisse
+                </a>
+            </nav>
+            <div class="sidebar-footer"><p>GAMEL Admin v1.0</p></div>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="main-content">
+
+        <header class="top-header">
+            <div class="header-search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="globalSearch" placeholder="Rechercher console, jeu vidéo, poste...">
+            </div>
+            <div class="header-profile">
+                <div class="notification-bell">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge-dot"></span>
+                </div>
+                <div class="user-info">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=admin" alt="Admin" class="avatar">
+                    <div>
+                        <h4>Alex Carter</h4>
+                        <span>Admin Principal</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="page-content">
+
+            <div class="view-header">
+                <div>
+                    <h1>Gestion des Consoles, Jeux & Postes</h1>
+                    <p style="color: var(--text-secondary); font-size: 14px; margin-top: 4px;">Ajoutez vos consoles, gérez leurs jeux vidéos associés et configurez vos postes de jeu en salle.</p>
+                </div>
+                <div>
+                    <button class="btn btn-primary" id="mainActionButton" onclick="handleMainAction()">
+                        <i class="fa-solid fa-plus"></i> <span id="mainActionText">Ajouter une Console</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Ribbon -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-gamepad"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">CONSOLES ENREGISTRÉES</span>
+                        <h2 class="stat-value font-orbitron" id="stat-total-models">0</h2>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(255,215,0,0.15); color: #FFD700;"><i class="fa-solid fa-dice-d20"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">JEUX VIDÉOS DISPONIBLES</span>
+                        <h2 class="stat-value font-orbitron" id="stat-total-games">0</h2>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(37,166,154,0.2);"><i class="fa-solid fa-desktop"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">POSTES DE JEU TOTAL</span>
+                        <h2 class="stat-value font-orbitron" id="stat-total-postes">0</h2>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(76,175,80,0.15); color: #4CAF50;"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">POSTES DISPONIBLES</span>
+                        <h2 class="stat-value font-orbitron" id="stat-available-postes">0</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs Nav -->
+            <div class="tab-nav">
+                <button class="tab-btn active" id="tabBtnModels" onclick="switchConsoleTab('models')">
+                    <i class="fa-solid fa-gamepad"></i> Consoles (<span id="countTabModels">0</span>)
+                </button>
+                <button class="tab-btn" id="tabBtnGames" onclick="switchConsoleTab('games')">
+                    <i class="fa-solid fa-dice-d20"></i> Liste des Jeux Vidéos (<span id="countTabGames">0</span>)
+                </button>
+                <button class="tab-btn" id="tabBtnPostes" onclick="switchConsoleTab('postes')">
+                    <i class="fa-solid fa-desktop"></i> Postes de Jeu (<span id="countTabPostes">0</span>)
+                </button>
+            </div>
+
+            <!-- TAB 1: Consoles & Modèles -->
+            <div id="tabModelsSection">
+                <div class="consoles-grid" id="consoleModelsGrid">
+                    <!-- Injected dynamically by consoles.js -->
+                </div>
+            </div>
+
+            <!-- TAB 2: Liste des Jeux Vidéos -->
+            <div id="tabGamesSection" style="display: none;">
+                <div class="table-card" style="padding: 12px 18px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                    <div id="gameConsoleFilterGroup" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="btn btn-sm btn-outline filter-btn active" data-console="all" onclick="filterGamesByConsole('all')">Toutes les consoles</button>
+                    </div>
+                    <span id="filteredGamesCountBadge" class="badge-tag font-orbitron">0 Jeu(x)</span>
+                </div>
+
+                <div class="consoles-grid" id="allGamesGrid">
+                    <!-- Injected dynamically by consoles.js -->
+                </div>
+            </div>
+
+            <!-- TAB 3: Postes de Jeu en Salle -->
+            <div id="tabPostesSection" style="display: none;">
+                <div class="table-card" style="padding: 12px 18px; margin-bottom: 20px; display: flex; justify-content: flex-start; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn btn-sm btn-outline filter-btn active" data-status="all" onclick="filterPostes('all')">Tous</button>
+                    <button class="btn btn-sm btn-outline filter-btn" data-status="available" onclick="filterPostes('available')">Disponibles</button>
+                    <button class="btn btn-sm btn-outline filter-btn" data-status="occupied" onclick="filterPostes('occupied')">Occupés</button>
+                    <button class="btn btn-sm btn-outline filter-btn" data-status="broken" onclick="filterPostes('broken')">En Panne</button>
+                </div>
+
+                <div class="consoles-grid" id="consolesGrid">
+                    <!-- Injected dynamically by consoles.js -->
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- MODAL 1: Ajouter / Modifier une Console (Modèle) -->
+<div id="addConsoleModelModal" class="modal">
+    <div class="modal-content" style="max-width: 520px;">
+        <div class="modal-header">
+            <h3 id="consoleModelModalTitle">Ajouter une Console</h3>
+            <button class="modal-close" onclick="closeModal('addConsoleModelModal')">&times;</button>
+        </div>
+        <form id="addConsoleModelForm" onsubmit="handleSaveConsoleModel(event)">
+            <input type="hidden" id="modelId">
+            <div class="form-group">
+                <label>Nom / Modèle de la Console</label>
+                <input type="text" id="modelName" class="form-control" placeholder="ex: PlayStation 5, Xbox Series X, Switch OLED..." required>
+            </div>
+            <div class="form-group">
+                <label>Marque / Fabricant (optionnel)</label>
+                <input type="text" id="modelManufacturer" class="form-control" placeholder="ex: Sony, Microsoft, Nintendo, PC Gamer...">
+            </div>
+            <div class="form-group">
+                <label>Description / Caractéristiques (optionnel)</label>
+                <textarea id="modelDescription" class="form-control" rows="2" placeholder="ex: Écran 4K 144Hz, 2 Manettes sans fil, Casque audio..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('addConsoleModelModal')">Annuler</button>
+                <button type="submit" class="btn btn-primary" id="saveModelBtn">Enregistrer la Console</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL 2: Ajouter un Poste de Jeu (Station) -->
+<div id="addPosteModal" class="modal">
+    <div class="modal-content" style="max-width: 520px;">
+        <div class="modal-header">
+            <h3>Ajouter un Poste de Jeu</h3>
+            <button class="modal-close" onclick="closeModal('addPosteModal')">&times;</button>
+        </div>
+        <form id="addPosteForm" onsubmit="handleAddPoste(event)">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                    <label for="posteConsoleSelect">Console du Poste</label>
+                    <select id="posteConsoleSelect" class="form-control" required onchange="handlePosteConsoleSelectChange()">
+                        <!-- Loaded dynamically from admin's console models -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="posteNumber">Numéro / ID (Auto)</label>
+                    <input type="text" id="posteNumber" class="form-control font-orbitron"
+                           placeholder="POST-01" readonly style="background: rgba(255,255,255,0.04); color: var(--primary-light); cursor: not-allowed;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="posteName">Nom du Poste</label>
+                <input type="text" id="posteName" class="form-control" placeholder="ex: Poste PS5 VIP #1" required>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('addPosteModal')">Annuler</button>
+                <button type="submit" class="btn btn-primary">Créer le Poste</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL 3: Modifier le Poste / Définir Disponibilité -->
+<div id="editConsoleModal" class="modal">
+    <div class="modal-content" style="max-width: 520px;">
+        <div class="modal-header">
+            <h3>Modifier le Poste / Définir Disponibilité</h3>
+            <button class="modal-close" onclick="closeModal('editConsoleModal')">&times;</button>
+        </div>
+        <form id="editConsoleForm" onsubmit="handleUpdateConsole(event)">
+            <input type="hidden" id="editConsoleId">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                    <label>Console Attribuée</label>
+                    <select id="editPosteConsoleSelect" class="form-control" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Numéro / Identifiant</label>
+                    <input type="text" id="editConsolePost" class="form-control font-orbitron" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Nom du Poste</label>
+                <input type="text" id="editConsoleName" class="form-control" required>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                    <label>Statut</label>
+                    <select id="editConsoleStatus" class="form-control">
+                        <option value="available">Disponible</option>
+                        <option value="occupied">Occupé</option>
+                        <option value="broken">En Panne / Maintenance</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Jeu en cours</label>
+                    <input type="text" id="editConsoleGame" class="form-control" placeholder="ex: EA Sports FC 26">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Heure de libération prévue (disponible à)</label>
+                <input type="time" id="editConsoleFreeTime" class="form-control">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('editConsoleModal')">Annuler</button>
+                <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL 4: Ajouter / Modifier un Jeu Vidéo -->
+<div id="addGameForConsoleModal" class="modal">
+    <div class="modal-content" style="max-width: 540px;">
+        <div class="modal-header">
+            <h3 id="gameModalTitle">Ajouter un Jeu Vidéo</h3>
+            <button class="modal-close" onclick="closeModal('addGameForConsoleModal')">&times;</button>
+        </div>
+        <form id="addGameForConsoleForm" onsubmit="handleSaveGameForConsole(event)">
+            <input type="hidden" id="editGameId">
+            
+            <div class="form-group">
+                <label>Nom du Jeu Vidéo</label>
+                <input type="text" id="addGameName" class="form-control" placeholder="ex: God of War, GTA V, EA Sports FC 26..." required>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label>Console Associée</label>
+                    <select id="addGameConsoleTarget" class="form-control" required>
+                        <!-- Loaded dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Genre</label>
+                    <input type="text" id="addGameGenre" class="form-control" placeholder="ex: Action, Aventure, Sport, Combat..." required>
+                </div>
+            </div>
+
+            <div class="form-grid-3">
+                <div class="form-group">
+                    <label>Tarif Salle (F/h)</label>
+                    <input type="number" id="addGamePriceHour" class="form-control" value="1000" required>
+                </div>
+                <div class="form-group">
+                    <label>Tarif Location (F/j)</label>
+                    <input type="number" id="addGamePriceRental" class="form-control" value="2500" required>
+                </div>
+                <div class="form-group">
+                    <label>Couleur d'accent</label>
+                    <input type="color" id="addGameColor" class="form-control" value="#25a69a" style="height: 44px; padding: 4px;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Description & Synopsis (optionnel)</label>
+                <textarea id="addGameDesc" class="form-control" rows="2" placeholder="Description du titre..."></textarea>
+            </div>
+
+            <div class="form-group" style="flex-direction: row; align-items: center; gap: 10px;">
+                <input type="checkbox" id="addGameRentalCheck" checked style="width: 18px; height: 18px; accent-color: var(--primary);">
+                <label for="addGameRentalCheck" style="margin: 0; cursor: pointer; font-size: 13px;">Disponible également à la location à emporter</label>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('addGameForConsoleModal')">Annuler</button>
+                <button type="submit" class="btn btn-primary" id="saveGameBtn">Enregistrer le Jeu</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL 5: Voir & Gérer les Jeux d'une Console spécifique -->
+<div id="viewConsoleGamesModal" class="modal">
+    <div class="modal-content" style="max-width: 650px;">
+        <div class="modal-header">
+            <div>
+                <h3 id="viewConsoleGamesTitle">Jeux Vidéos</h3>
+                <span id="viewConsoleGamesSubtitle" style="font-size: 12px; color: var(--text-muted);"></span>
+            </div>
+            <button class="modal-close" onclick="closeModal('viewConsoleGamesModal')">&times;</button>
+        </div>
+        <div style="padding: 16px 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <span style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">Titres disponibles sur ce modèle :</span>
+                <button class="btn btn-primary btn-sm" onclick="openAddGameFromViewModal()">
+                    <i class="fa-solid fa-plus"></i> Ajouter un Titre
+                </button>
+            </div>
+            <div id="consoleGamesListContainer" style="display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto;">
+                <!-- Loaded dynamically -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="closeModal('viewConsoleGamesModal')">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/layout.js"></script>
+<script src="js/app.js?v=20260828_5"></script>
+<script src="js/consoles.js?v=20260828_5"></script>
+</body>
+</html>

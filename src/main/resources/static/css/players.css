@@ -1,0 +1,148 @@
+/* ============================================================
+   PLAYERS.CSS - Communauté des Joueurs page styles
+   Player cards, avatar, XP bar, badges, level badge
+   ============================================================ */
+
+/* Players Grid Layout */
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+/* Player Card */
+.player-card {
+    background-color: var(--card);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    transition: var(--transition);
+}
+
+.player-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    box-shadow: 0 0 15px var(--primary-glow);
+}
+
+/* Player Header Row */
+.player-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.player-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1.5px solid var(--primary);
+    background-color: var(--surface-elevated);
+}
+
+.player-meta h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.player-meta span {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Level Badge (top-right corner) */
+.player-level-badge {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background-color: var(--primary);
+    color: #000000;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px var(--primary);
+}
+
+/* Player Body */
+.player-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* XP Section */
+.player-xp-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.player-xp-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.player-xp-track {
+    height: 6px;
+    background-color: var(--surface-elevated);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.player-xp-bar {
+    height: 100%;
+    background-color: var(--primary);
+    border-radius: 3px;
+    box-shadow: 0 0 8px var(--primary);
+}
+
+/* Badges Section */
+.player-badges-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.player-badges-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 24px;
+}
+
+.badge-item {
+    background-color: var(--glass-background);
+    border: 1px solid var(--glass-border);
+    color: var(--primary);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Player Actions Row */
+.player-actions {
+    display: flex;
+    gap: 8px;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 16px;
+    margin-top: 4px;
+}
+
+.player-actions .btn {
+    flex-grow: 1;
+    justify-content: center;
+    padding: 8px;
+    font-size: 12px;
+}

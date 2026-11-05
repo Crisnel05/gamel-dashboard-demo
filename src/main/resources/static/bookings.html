@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAMEL – Réservations</title>
+    <meta name="description" content="Gestion complète des réservations de postes au lounge GAMEL.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/bookings.css">
+</head>
+<body data-page="bookings">
+
+<div class="app-container">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="mainSidebar">
+            <a href="index.html" class="sidebar-logo" title="GAMEL Dashboard - Accueil">
+                <img src="images/logo.png" alt="GAMEL" class="sidebar-logo-img">
+            </a>
+            <nav class="sidebar-menu">
+                <a href="index.html" class="menu-item" data-nav="index">
+                    <i class="fa-solid fa-chart-simple"></i> Dashboard
+                </a>
+                <a href="bookings.html" class="menu-item active" data-nav="bookings">
+                    <i class="fa-solid fa-calendar-check"></i> Réservations
+                </a>
+                <a href="consoles.html" class="menu-item" data-nav="consoles">
+                    <i class="fa-solid fa-desktop"></i> Consoles
+                </a>
+                <a href="players.html" class="menu-item" data-nav="players">
+                    <i class="fa-solid fa-users"></i> Joueurs
+                </a>
+                <a href="events.html" class="menu-item" data-nav="events">
+                    <i class="fa-solid fa-trophy"></i> Tournois
+                </a>
+                <a href="games.html" class="menu-item" data-nav="games">
+                    <i class="fa-solid fa-dice-d20"></i> Catalogue Jeux
+                </a>
+                <a href="rentals.html" class="menu-item" data-nav="rentals">
+                    <i class="fa-solid fa-box-archive"></i> Locations
+                </a>
+                <a href="finance.html" class="menu-item" data-nav="finance">
+                    <i class="fa-solid fa-coins"></i> Finance & Caisse
+                </a>
+            </nav>
+            <div class="sidebar-footer"><p>GAMEL Admin v1.0</p></div>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="main-content">
+
+        <header class="top-header">
+            <div class="header-search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="globalSearch" placeholder="Rechercher...">
+            </div>
+            <div class="header-profile">
+                <div class="notification-bell">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge-dot"></span>
+                </div>
+                <div class="user-info">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=admin" alt="Admin" class="avatar">
+                    <div>
+                        <h4>Alex Carter</h4>
+                        <span>Admin Principal</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="page-content">
+
+            <div class="view-header">
+                <div>
+                    <h1>Gestion des Réservations</h1>
+                    <p style="color: var(--text-secondary); font-size: 14px; margin-top: 4px;">Suivez les réservations des postes de jeu sur place, validez les codes et activez les sessions.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openCreateBookingModal()">
+                    <i class="fa-solid fa-plus"></i> Nouvelle Réservation
+                </button>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filter-bar">
+                <div class="tabs">
+                    <button class="tab-btn active" id="tab-all" onclick="filterBookings('all')">Tout</button>
+                    <button class="tab-btn" id="tab-pending" onclick="filterBookings('pending')">En attente</button>
+                    <button class="tab-btn" id="tab-confirmed" onclick="filterBookings('confirmed')">Confirmées</button>
+                    <button class="tab-btn" id="tab-active" onclick="filterBookings('active')">Actives</button>
+                    <button class="tab-btn" id="tab-completed" onclick="filterBookings('completed')">Terminées</button>
+                    <button class="tab-btn" id="tab-cancelled" onclick="filterBookings('cancelled')">Annulées</button>
+                </div>
+            </div>
+
+            <!-- Bookings Table -->
+            <div class="panel-card">
+                <div class="panel-body table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Joueur</th>
+                                <th>Jeu &amp; Console</th>
+                                <th>Poste</th>
+                                <th>Créneau Horaire</th>
+                                <th>Montant</th>
+                                <th>Paiement</th>
+                                <th>Code</th>
+                                <th>Statut</th>
+                                <th style="text-align: center; min-width: 220px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- MODAL: Validation Code -->
+<div id="validationModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('validationModal')">&times;</span>
+        <h3 class="font-orbitron">Activer la session</h3>
+        <p style="color: var(--text-secondary); margin: 8px 0 16px;">Saisissez le code de validation à 4 chiffres fourni par le joueur.</p>
+        <div class="form-group">
+            <input type="text" id="validationCodeInput" class="form-control text-center font-orbitron"
+                   style="font-size: 24px; letter-spacing: 6px;" placeholder="1234" maxlength="10">
+            <span class="error-msg" id="validationError"></span>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('validationModal')">Annuler</button>
+            <button class="btn btn-primary" id="submitValidationBtn" onclick="submitValidation()">Valider le code</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Create Booking -->
+<div id="createBookingModal" class="modal">
+    <div class="modal-content" style="max-width: 580px;">
+        <div class="modal-header">
+            <h3>Nouvelle Réservation en Salle</h3>
+            <button class="modal-close" onclick="closeModal('createBookingModal')">&times;</button>
+        </div>
+        <form id="createBookingForm" onsubmit="handleCreateBooking(event)">
+            <div class="form-group">
+                <label>Joueur</label>
+                <select id="bookingPlayerSelect" class="form-control" required></select>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label>Jeu</label>
+                    <select id="bookingGameSelect" class="form-control" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Poste / Console</label>
+                    <select id="bookingConsoleSelect" class="form-control" required></select>
+                </div>
+            </div>
+
+            <div class="form-grid-3">
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="bookingDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Début</label>
+                    <input type="time" id="bookingStart" class="form-control" value="14:00" required>
+                </div>
+                <div class="form-group">
+                    <label>Fin</label>
+                    <input type="time" id="bookingEnd" class="form-control" value="16:00" required>
+                </div>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label>Montant Total (FCFA)</label>
+                    <input type="number" id="bookingAmount" class="form-control" value="2000" required>
+                </div>
+                <div class="form-group">
+                    <label>Moyen de Paiement</label>
+                    <select id="bookingPaymentMethod" class="form-control">
+                        <option value="wave">Wave</option>
+                        <option value="orangeMoney">Orange Money</option>
+                        <option value="cash">Espèces au comptoir</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('createBookingModal')">Annuler</button>
+                <button type="submit" class="btn btn-primary">Créer la réservation</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: Edit Booking -->
+<div id="editBookingModal" class="modal">
+    <div class="modal-content" style="max-width: 580px;">
+        <div class="modal-header">
+            <h3>Modifier la Réservation</h3>
+            <button class="modal-close" onclick="closeModal('editBookingModal')">&times;</button>
+        </div>
+        <form id="editBookingForm" onsubmit="handleUpdateBooking(event)">
+            <input type="hidden" id="editBookingId">
+
+            <div class="form-group">
+                <label>Joueur</label>
+                <select id="editBookingPlayerSelect" class="form-control" required></select>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label>Jeu</label>
+                    <select id="editBookingGameSelect" class="form-control" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Poste / Console</label>
+                    <select id="editBookingConsoleSelect" class="form-control" required></select>
+                </div>
+            </div>
+
+            <div class="form-grid-3">
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="editBookingDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Début</label>
+                    <input type="time" id="editBookingStart" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Fin</label>
+                    <input type="time" id="editBookingEnd" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="form-grid-3">
+                <div class="form-group">
+                    <label>Montant (FCFA)</label>
+                    <input type="number" id="editBookingAmount" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Statut Réservation</label>
+                    <select id="editBookingStatus" class="form-control">
+                        <option value="pending">En attente</option>
+                        <option value="confirmed">Confirmée</option>
+                        <option value="active">Active (en jeu)</option>
+                        <option value="completed">Terminée</option>
+                        <option value="cancelled">Annulée</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Code PIN / Ticket</label>
+                    <input type="text" id="editBookingCode" class="form-control" placeholder="1234">
+                </div>
+            </div>
+
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label>Moyen de Paiement</label>
+                    <select id="editBookingPaymentMethod" class="form-control">
+                        <option value="wave">Wave</option>
+                        <option value="orangeMoney">Orange Money</option>
+                        <option value="cash">Espèces au comptoir</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Statut Paiement</label>
+                    <select id="editBookingPaymentStatus" class="form-control">
+                        <option value="success">Payé (Succès)</option>
+                        <option value="pending">En attente</option>
+                        <option value="failed">Échoué</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('editBookingModal')">Annuler</button>
+                <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="js/layout.js"></script>
+<script src="js/app.js?v=20260828_5"></script>
+<script src="js/bookings.js?v=20260828_5"></script>
+</body>
+</html>

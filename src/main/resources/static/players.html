@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAMEL – Joueurs</title>
+    <meta name="description" content="Communauté des joueurs GAMEL : profils, XP, badges et niveaux.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/players.css">
+</head>
+<body data-page="players">
+
+<div class="app-container">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="mainSidebar">
+            <a href="index.html" class="sidebar-logo" title="GAMEL Dashboard - Accueil">
+                <img src="images/logo.png" alt="GAMEL" class="sidebar-logo-img">
+            </a>
+            <nav class="sidebar-menu">
+                <a href="index.html" class="menu-item" data-nav="index">
+                    <i class="fa-solid fa-chart-simple"></i> Dashboard
+                </a>
+                <a href="bookings.html" class="menu-item" data-nav="bookings">
+                    <i class="fa-solid fa-calendar-check"></i> Réservations
+                </a>
+                <a href="consoles.html" class="menu-item" data-nav="consoles">
+                    <i class="fa-solid fa-desktop"></i> Consoles
+                </a>
+                <a href="players.html" class="menu-item active" data-nav="players">
+                    <i class="fa-solid fa-users"></i> Joueurs
+                </a>
+                <a href="events.html" class="menu-item" data-nav="events">
+                    <i class="fa-solid fa-trophy"></i> Tournois
+                </a>
+                <a href="games.html" class="menu-item" data-nav="games">
+                    <i class="fa-solid fa-dice-d20"></i> Catalogue Jeux
+                </a>
+                <a href="rentals.html" class="menu-item" data-nav="rentals">
+                    <i class="fa-solid fa-box-archive"></i> Locations
+                </a>
+                <a href="finance.html" class="menu-item" data-nav="finance">
+                    <i class="fa-solid fa-coins"></i> Finance & Caisse
+                </a>
+            </nav>
+            <div class="sidebar-footer"><p>GAMEL Admin v1.0</p></div>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="main-content">
+
+        <header class="top-header">
+            <div class="header-search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="globalSearch" placeholder="Rechercher...">
+            </div>
+            <div class="header-profile">
+                <div class="notification-bell">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge-dot"></span>
+                </div>
+                <div class="user-info">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=admin" alt="Admin" class="avatar">
+                    <div>
+                        <h4>Alex Carter</h4>
+                        <span>Admin Principal</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="page-content">
+
+            <div class="view-header">
+                <div>
+                    <h1>Communauté des Joueurs</h1>
+                    <p style="color: var(--text-secondary); font-size: 14px; margin-top: 4px;">Suivez les profils, les niveaux XP, les badges et l'historique complet des gamers.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openCreatePlayerModal()">
+                    <i class="fa-solid fa-user-plus"></i> Nouveau Joueur
+                </button>
+            </div>
+
+            <!-- Search & Filters -->
+            <div class="table-card" style="padding: 14px 20px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div style="font-size: 14px; color: var(--text-secondary);">
+                    Total Joueurs : <strong id="playersCount" style="color: var(--primary-light); font-family: 'Orbitron';">—</strong>
+                </div>
+                <input type="text" id="playerLocalSearch" class="form-control" style="width: 240px; padding: 8px 12px; font-size: 13px;" placeholder="Filtrer par nom ou tél..." oninput="handleLocalSearch()">
+            </div>
+
+            <!-- Players Grid -->
+            <div class="players-grid" id="playersGrid">
+                <!-- Loaded dynamically -->
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- MODAL: Award XP -->
+<div id="xpModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('xpModal')">&times;</span>
+        <h3>Attribuer des XP</h3>
+        <p id="xpModalSubtitle" style="color: var(--text-secondary); margin: 6px 0 16px;">Joueur: -</p>
+        <div class="form-group">
+            <label for="xpAmountInput">Quantité de XP</label>
+            <input type="number" id="xpAmountInput" class="form-control" placeholder="e.g. 100" min="1" step="50" value="100">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('xpModal')">Annuler</button>
+            <button class="btn btn-primary" onclick="submitXp()">Attribuer</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Award Badge -->
+<div id="badgeModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('badgeModal')">&times;</span>
+        <h3>Décerner un Badge</h3>
+        <p id="badgeModalSubtitle" style="color: var(--text-secondary); margin: 6px 0 16px;">Joueur: -</p>
+        <div class="form-group">
+            <label for="badgeSelect">Choisir un Badge</label>
+            <select id="badgeSelect" class="form-control">
+                <option value="Champion FIFA">⚽ Champion FIFA</option>
+                <option value="Reine Tekken">🥊 Reine Tekken</option>
+                <option value="Speedrunner">⏱️ Speedrunner</option>
+                <option value="Souls Master">⚔️ Souls Master</option>
+                <option value="Sniper Elite">🎯 Sniper Elite</option>
+                <option value="Top Donateur">💎 Top Donateur</option>
+                <option value="Vétéran Gamel">⭐ Vétéran Gamel</option>
+                <option value="Grand Master">👑 Grand Master</option>
+                <option value="Rookie de l'Année">🔥 Rookie de l'Année</option>
+            </select>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('badgeModal')">Annuler</button>
+            <button class="btn btn-primary" onclick="submitBadge()">Décerner</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Create Player -->
+<div id="createPlayerModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Ajouter un Nouveau Joueur</h3>
+            <button class="modal-close" onclick="closeModal('createPlayerModal')">&times;</button>
+        </div>
+        <form id="createPlayerForm" onsubmit="handleCreatePlayer(event)">
+            
+            <!-- Avatar Picker Component -->
+            <div class="avatar-picker-card">
+                <img id="newPlayerAvatarPreview" src="https://api.dicebear.com/7.x/bottts/svg?seed=gamer" alt="Avatar Preview" class="avatar-preview-img">
+                <div style="flex: 1; min-width: 0;">
+                    <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Avatar / Photo de profil</label>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="setNewPlayerAvatarPreset('bottts', 'Gamer')">🤖 Bot</button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="setNewPlayerAvatarPreset('adventurer', 'Hero')">⚔️ Héros</button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="setNewPlayerAvatarPreset('pixel-art', 'Retro')">👾 Pixel</button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="setNewPlayerAvatarPreset('micah', 'Player')">🧑 Portrait</button>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="openAvatarGalleryModal('new')"><i class="fa-solid fa-images"></i> Galerie</button>
+                        <label class="btn btn-outline btn-sm" style="cursor: pointer; margin: 0;">
+                            <i class="fa-solid fa-camera"></i> Photo
+                            <input type="file" accept="image/*" style="display: none;" onchange="handleAvatarFileUpload(event, 'new')">
+                        </label>
+                    </div>
+                    <input type="text" id="newPlayerAvatarUrl" class="form-control" style="font-size: 12px; padding: 6px 10px;" placeholder="Ou collez l'URL d'une photo..." oninput="updateNewAvatarPreview()">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Nom Complet</label>
+                <input type="text" id="newPlayerName" class="form-control" placeholder="ex: Mamadou Ba" required oninput="if(!document.getElementById('newPlayerAvatarUrl').value) updateDefaultNewAvatar(this.value)">
+            </div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="newPlayerEmail" class="form-control" placeholder="mamadou@gamel.sn" required>
+                </div>
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="tel" id="newPlayerPhone" class="form-control" placeholder="771234567" required>
+                </div>
+            </div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label>Rôle</label>
+                    <select id="newPlayerRole" class="form-control">
+                        <option value="player">Joueur</option>
+                        <option value="admin">Administrateur</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Code PIN (4 chiffres)</label>
+                    <input type="password" id="newPlayerPin" class="form-control" placeholder="1234" maxlength="4">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('createPlayerModal')">Annuler</button>
+                <button type="submit" class="btn btn-primary">Créer le joueur</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: Edit Player -->
+<div id="editPlayerModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Modifier le Profil Joueur</h3>
+            <button class="modal-close" onclick="closeModal('editPlayerModal')">&times;</button>
+        </div>
+        <form id="editPlayerForm" onsubmit="handleUpdatePlayer(event)">
+            <input type="hidden" id="editPlayerId">
+            
+            <!-- Avatar & Photo Editor Component -->
+            <div class="avatar-picker-card">
+                <img id="editPlayerAvatarPreview" src="https://api.dicebear.com/7.x/bottts/svg?seed=admin" alt="Avatar Preview" class="avatar-preview-img">
+                <div style="flex: 1; min-width: 0;">
+                    <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; display: block;">Photo de Profil / Avatar</label>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="setEditPlayerAvatarPreset('bottts')">🤖 Bot</button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="setEditPlayerAvatarPreset('adventurer')">⚔️ Héros</button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="setEditPlayerAvatarPreset('pixel-art')">👾 Pixel</button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="setEditPlayerAvatarPreset('micah')">🧑 Portrait</button>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="openAvatarGalleryModal('edit')"><i class="fa-solid fa-images"></i> Galerie</button>
+                        <label class="btn btn-outline btn-sm" style="cursor: pointer; margin: 0;">
+                            <i class="fa-solid fa-camera"></i> Photo
+                            <input type="file" accept="image/*" style="display: none;" onchange="handleAvatarFileUpload(event, 'edit')">
+                        </label>
+                    </div>
+                    <input type="text" id="editPlayerAvatarUrl" class="form-control" style="font-size: 12px; padding: 6px 10px;" placeholder="URL personnalisée ou photo..." oninput="updateEditAvatarPreview()">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Nom Complet</label>
+                <input type="text" id="editPlayerName" class="form-control" required>
+            </div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="editPlayerEmail" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="tel" id="editPlayerPhone" class="form-control" required>
+                </div>
+            </div>
+            <div class="form-grid-3">
+                <div class="form-group">
+                    <label>Rôle</label>
+                    <select id="editPlayerRole" class="form-control">
+                        <option value="player">Joueur</option>
+                        <option value="admin">Administrateur</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Niveau</label>
+                    <input type="number" id="editPlayerLevel" class="form-control" min="1" max="100">
+                </div>
+                <div class="form-group">
+                    <label>Code PIN</label>
+                    <input type="password" id="editPlayerPin" class="form-control" placeholder="1234" maxlength="4">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('editPlayerModal')">Annuler</button>
+                <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: Galerie de Portraits & Avatars en Base de Données -->
+<div id="avatarGalleryModal" class="modal">
+    <div class="modal-content" style="max-width: 680px;">
+        <div class="modal-header">
+            <div>
+                <h3>Galerie de Portraits & Avatars</h3>
+                <span style="font-size: 12px; color: var(--text-secondary);">Sélectionnez un portrait ou avatar pour le joueur</span>
+            </div>
+            <button class="modal-close" onclick="closeModal('avatarGalleryModal')">&times;</button>
+        </div>
+        <div style="padding: 10px 0;">
+            <!-- Category Filter Pills -->
+            <div id="avatarCategoryFilters" class="filter-bar" style="margin-bottom: 16px;">
+                <button class="filter-btn active" onclick="filterAvatarGallery('all')">Tous</button>
+                <button class="filter-btn" onclick="filterAvatarGallery('Portraits')">🧑 Portraits</button>
+                <button class="filter-btn" onclick="filterAvatarGallery('Gaming')">⚔️ Héros Gaming</button>
+                <button class="filter-btn" onclick="filterAvatarGallery('Anime')">🌸 Anime</button>
+                <button class="filter-btn" onclick="filterAvatarGallery('Robots')">🤖 Robots & Pixel</button>
+            </div>
+
+            <!-- Avatars Grid -->
+            <div id="avatarPresetsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; max-height: 400px; overflow-y: auto; padding: 4px;">
+                <!-- Injected dynamically by players.js -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="closeModal('avatarGalleryModal')">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Player 360 Profile -->
+<div id="playerProfileModal" class="modal modal-wide">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="profileModalTitle">Fiche Profil Joueur</h3>
+            <button class="modal-close" onclick="closeModal('playerProfileModal')">&times;</button>
+        </div>
+        <div id="playerProfileContent">
+            <!-- Injected dynamically -->
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="closeModal('playerProfileModal')">Fermer</button>
+    </div>
+</div>
+
+<script src="js/layout.js"></script>
+<script src="js/app.js?v=20260828_5"></script>
+<script src="js/players.js?v=20260828_5"></script>
+</body>
+</html>
+
